@@ -4,13 +4,14 @@ import { DefaultDescription, DefaultTitle } from "@/constants";
 import ConditionalHeader from "@/components/layout/ConditionalHeader";
 import ConditionalFooter from "@/components/layout/ConditionalFooter";
 import getThemeOptions from "@/services/site/getThemeOptions";
-import dynamic from "next/dynamic";
-const LordiconPlayer = dynamic(() => import("@/components/layout/LordiconPlayer"), {
-  ssr: false,
-});
 import localFont from "next/font/local";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
+import dynamic from "next/dynamic";
+
+const LordiconPlayer = dynamic(() => import("@/components/layout/LordiconPlayer"), {
+  ssr: false,
+});
 
 const dmSans = localFont({
   src: [
