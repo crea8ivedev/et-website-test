@@ -1,0 +1,106 @@
+html.light {
+  @apply bg-white text-black-800;
+}
+
+html {
+  @apply bg-black-800 text-white;
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+body {
+  @apply font-body text-body-4 xl:text-body-2 antialiased overflow-x-hidden;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  @apply hidden;
+}
+
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  @apply relative;
+}
+
+a,
+button,
+input,
+textarea {
+  @apply outline-0 shadow-none focus:outline-none focus:ring-0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-heading tracking-001 font-bold;
+}
+
+h1 span,
+h2 span,
+h3 span,
+h4 span,
+h5 span,
+h6 span,
+p span {
+  @apply text-transparent bg-clip-text bg-gradient-to-br from-white via-gold to-gold;
+}
+
+h1,
+.h1 {
+  @apply text-heading-1 leading-[1.2];
+}
+h2,
+.h2 {
+  @apply max-sm:text-heading-4 max-xl:text-heading-3 text-heading-2 leading-[1.2];
+}
+h3,
+.h3 {
+  @apply max-sm:text-heading-5 max-xl:text-heading-4 text-heading-3 leading-[1.2];
+}
+h4,
+.h4 {
+  @apply max-sm:text-heading-6 max-xl:text-heading-5 text-heading-4 leading-[1.2];
+}
+h5,
+.h5 {
+  @apply max-sm:text-body-1 max-xl:text-heading-6 text-heading-5 leading-[1.2];
+}
+h6,
+.h6 {
+  @apply max-xl:text-body-1 text-heading-6 leading-[1.2];
+}
+
+.title-80 h2 {
+  @apply min-1500:text-80 min-1500:leading-80;
+}
+
+.title {
+  @apply -tracking-01;
+}
+
+.pre-heading span {
+  @apply text-heading-5 font-bold max-769:text-body-4 uppercase;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+a,
+a:hover {
+  @apply transition-all duration-300;
+}

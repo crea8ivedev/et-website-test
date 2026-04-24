@@ -1,0 +1,1911 @@
+/* ─── LCP: CSS-only enter animations for above-fold elements ───────────────
+   Using CSS keyframes instead of Framer Motion means the browser can paint
+   these elements on the very first frame — no JS download or hydration needed.
+   The text is visible in SSR/static HTML; the animation is purely cosmetic. */
+
+/* opacity intentionally omitted — text stays visible so the browser can
+   measure LCP on first paint. Only translateY animates. */
+@keyframes innerBannerFadeUp {
+  from {
+    transform: translateY(20px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.inner-banner-heading {
+  animation: innerBannerFadeUp 0.8s ease-out both;
+}
+
+.inner-banner-desc {
+  animation: innerBannerFadeUp 0.8s ease-out 0.2s both;
+}
+
+/* Inner banner video panel — CSS-only reveal replacing framer-motion scaleX.
+   Not an LCP candidate (right-side panel), so opacity fade is safe here. */
+@keyframes innerBannerVideoIn {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.inner-banner-video-reveal {
+  transform-origin: 100% 50%;
+  animation: innerBannerVideoIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+}
+
+/* Milestones timeline — active card enter animation. Re-mounts on key change
+   (activeYear), so the animation fires each time a new milestone is selected. */
+@keyframes milestoneCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.milestone-card-enter {
+  animation: milestoneCardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Digital Success — mobile auto-loop marquee rows.
+   Replaces framer-motion scroll-tied x-translate with continuous CSS loop. */
+@keyframes digitalSuccessMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes digitalSuccessMarqueeReverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.digital-success-marquee-track {
+  animation: digitalSuccessMarquee 40s linear infinite;
+  width: max-content;
+}
+
+.digital-success-marquee-track-reverse {
+  animation: digitalSuccessMarqueeReverse 40s linear infinite;
+  width: max-content;
+}
+
+/* ─── Hero Banner LCP fix: CSS-only heading animation ───────────────────────
+   BEFORE: 60+ motion.div elements each starting color:transparent + clipPath hidden.
+   Text was invisible until JS downloaded → animation ran (~3-4s LCP penalty).
+
+   AFTER: Text rendered visible (opacity:1) in SSR. Only translateY animates
+   (not opacity), so the browser counts LCP on first paint — not after JS runs.
+   CSS runs without JS, starts at first paint, saves ~2-3s on LCP. */
+
+@keyframes hero-line-in {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.hero-h1-line {
+  /* opacity stays 1 — text is always visible for LCP measurement */
+  animation: hero-line-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-h1-line--1 {
+  animation-delay: 0s;
+}
+.hero-h1-line--2 {
+  animation-delay: 0.15s;
+}
+.hero-h1-line--3 {
+  animation-delay: 0.3s;
+}
+
+/* ─── lord-icon reserved size: prevents CLS while the custom element registers
+   LordiconPlayer calls customElements.define after requestIdleCallback, so
+   `lord-icon` nodes start as zero-size inline elements inside the <h1>.
+   `:not(:defined)` matches only until the define() call fires; after that
+   the element's own sizing (Tailwind w-80/h-80 etc.) takes over. */
+lord-icon:not(:defined) {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+@media (max-width: 1025px) {
+  lord-icon:not(:defined) {
+    width: 60px;
+    height: 60px;
+  }
+}
+@media (max-width: 575px) {
+  lord-icon:not(:defined) {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ─── Hero icon marquee: CSS replaces JS useAnimationFrame ──────────────────
+   useAnimationFrame ran a JS callback every frame (60fps), blocking the main
+   thread continuously → high TBT. CSS GPU-composited animation has zero JS cost. */
+
+@keyframes hero-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.hero-icon-marquee {
+  display: flex;
+  width: max-content;
+  animation: hero-marquee-scroll 30s linear infinite;
+  will-change: transform;
+}
+
+.hero-icon-marquee.is-paused {
+  animation-play-state: paused;
+}
+
+/* Icon hover scale — pure CSS removes the need for per-icon motion.div wrappers */
+.hero-icon-link {
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease-out;
+}
+.hero-icon-link:hover {
+  transform: scale(1.15);
+}
+.hero-icon-link:hover img,
+.technology-marquee-wrapper .group a.active img {
+  filter: invert(40%) sepia(30%) saturate(1877%) hue-rotate(8deg) brightness(100%) contrast(100%);
+}
+
+/* ─── Respect reduced-motion preference ─────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .inner-banner-heading,
+  .inner-banner-desc,
+  .inner-banner-video-reveal,
+  .milestone-card-enter,
+  .hero-h1-line {
+    animation: none;
+  }
+  .hero-icon-marquee,
+  .digital-success-marquee-track,
+  .digital-success-marquee-track-reverse {
+    animation-duration: 120s;
+  }
+}
+
+/* dark mode */
+
+.border-beam-orbit {
+  background: linear-gradient(to left, transparent, var(--beam-color), transparent);
+}
+
+.banner-wrapper .banner-content h1,
+.banner-wrapper .banner-content h2 {
+  @apply text-[5vw] max-lg:text-[6vw] leading-[1.05] font-bold;
+}
+
+.banner-marquee-row {
+  @apply relative flex w-full justify-center pointer-events-none h-390 md:h-508;
+}
+.banner-marquee {
+  @apply absolute flex max-sm:w-[100em] w-[124em] items-start justify-center;
+}
+.banner-marquee-half-circle::after {
+  @apply content-[''] absolute inset-0 w-full h-full bg-linear-to-b from-black-800/0 via-black-800/15 via-50% to-black-800 to-95% pointer-events-none;
+}
+.banner-marquee-half-circle {
+  @apply absolute flex w-full items-center justify-center flex-col h-508;
+}
+.banner-marquee-circle {
+  @apply will-change-transform -rotate-90 max-sm:top-0 top-[60%] absolute flex w-full items-center justify-center flex-col max-sm:aspect-[3/4] aspect-square;
+}
+.banner-marquee-collection {
+  @apply will-change-transform w-full h-full absolute inset-0 origin-center;
+  animation: radial-marquee-rotate 90s linear infinite;
+}
+.banner-marquee-collection.is-paused {
+  animation-play-state: paused;
+}
+@keyframes radial-marquee-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+.banner-marquee-list {
+  @apply absolute inset-0 w-full h-full flex items-center justify-center will-change-transform;
+}
+.banner-marquee-item {
+  transform-origin: center 500%;
+  pointer-events: auto;
+}
+.marquee-card {
+  @apply relative w-full;
+}
+.marquess-card-inner {
+  @apply flex flex-col rounded-10 p-10 pb-0 bg-boho-black text-wild-sand;
+}
+.marquess-card-inner .img {
+  @apply relative overflow-hidden rounded-10;
+}
+.marquess-card-inner .c-before {
+  @apply pt-[62.5%];
+}
+.marquess-card-inner .img img {
+  @apply absolute inset-0 w-full h-full object-cover;
+}
+.card-info {
+  @apply flex items-center justify-between gap-8 px-10 py-16;
+}
+.radial-marquee__card-p {
+  @apply text-left w-full font-heading max-md:text-body-5 text-body-1 leading-[1.2] capitalize;
+}
+
+/* .technology-marquee-wrapper .group a.active img filter is handled by .hero-icon-link:hover img rule above */
+
+.technology-marquee-wrapper .group:before {
+  @apply content-[''] absolute top-0 left-0 h-full bg-linear-to-l from-black-600/0 via-black-800/80 to-black-800 pointer-events-none z-1 w-[calc(40dvw_-_60px)];
+}
+.technology-marquee-wrapper .group:after {
+  @apply content-[''] absolute top-0 right-0 h-full bg-linear-to-r from-black-600/0 via-black-800/80 to-black-800 pointer-events-none z-1 w-[calc(40dvw_-_60px)];
+}
+
+.services-wrapper .service-item {
+  @apply cursor-pointer py-40 max-1199:py-30 max-769:py-20 w-full flex items-start first:pt-0 last:pb-0 border-b border-solid border-gray-200 last:border-0;
+}
+.services-wrapper .service-item .index {
+  @apply text-gray-300;
+}
+.services-wrapper .service-item .title h4 {
+  @apply text-40 leading-44 max-1500:text-32 max-1500:leading-36 max-769:text-30 max-769:leading-35 max-639:text-24 max-639:leading-28;
+}
+.services-wrapper .service-item.active .title h4 {
+  @apply text-gold;
+}
+.services-wrapper .service-item .tags {
+  @apply flex items-center gap-10 flex-wrap;
+}
+.services-wrapper .service-item .tags-wrapper .tag-chip {
+  @apply py-5 px-10 bg-white/10 rounded-10 block text-body-5 duration-300 ease-linear hover:bg-gold;
+}
+html.light .services-wrapper .service-item .tags-wrapper .tag-chip {
+  @apply bg-black/10 hover:bg-gold;
+}
+.services-wrapper .service-item .image-wrapper img {
+  @apply rounded-10;
+}
+
+.services-content-item .title span,
+.services-content-item .title a {
+  @apply text-[6vw] max-sm:tracking-001 sm:text-[5vw] md:text-[3.5vw] lg:text-[3.2vw] font-heading;
+}
+
+.work-wrapper .title h2 {
+  @apply text-[25.5vw] leading-[1.2] whitespace-nowrap;
+}
+
+.testimonial-section .google-cluth-review {
+  @apply py-13 px-20 bg-black-500 rounded-10 border border-solid border-white max-w-354 mx-auto mt-15;
+}
+.testimonial-section .testimonial-item .review-content p {
+  @apply text-body-1 leading-[1.5] max-1366:text-18 max-1366:leading-30 max-769:text-body-4 max-769:leading-24;
+}
+.testimonial-section .testimonial-item .reviewer-name span {
+  @apply text-24 font-semibold max-1366:text-body-1;
+}
+/* feedback slider pagination */
+.case-study-feedback-swiper .feedback-pagination {
+  @apply relative mt-30 max-769:mt-16 flex justify-center gap-6;
+}
+.case-study-feedback-swiper .feedback-pagination .swiper-pagination-bullet {
+  @apply bg-gold transition-all ease-in-out duration-300 border-none cursor-pointer rounded-full w-8 h-8 p-0;
+}
+.case-study-feedback-swiper .feedback-pagination .swiper-pagination-bullet-active {
+  @apply w-26 bg-gold rounded-10 transition-all ease-in-out duration-300;
+}
+/* feedback scroll snap */
+.feedback-snap-track {
+  display: flex;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.feedback-snap-track::-webkit-scrollbar {
+  display: none;
+}
+.feedback-snap-slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+}
+/* industry marquee */
+@keyframes industry-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.industry-marquee-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: industry-marquee 30s linear infinite;
+}
+.industry-marquee-item {
+  flex-shrink: 0;
+}
+.testimonial-section .floating-images img {
+  @apply rounded-full blur-[3px];
+}
+.testimonial-section .floating-images .first-image,
+.testimonial-section .floating-images .second-image,
+.testimonial-section .floating-images .third-image,
+.testimonial-section .floating-images .fourth-image,
+.testimonial-section .floating-images .fifth-image,
+.testimonial-section .floating-images .sixth-image,
+.testimonial-section .floating-images .seventh-image,
+.testimonial-section .floating-images .eighth-image {
+  @apply w-fit;
+}
+.testimonial-section .floating-images .first-image {
+  @apply absolute top-0 left-0;
+}
+.testimonial-section .floating-images .second-image {
+  @apply absolute  top-66 right-66;
+}
+.testimonial-section .floating-images .third-image {
+  @apply absolute bottom-58 left-26;
+}
+.testimonial-section .floating-images .fourth-image {
+  @apply absolute bottom-116 right-20;
+}
+.testimonial-section .floating-images .fifth-image {
+  @apply absolute top-132 left-88;
+}
+.testimonial-section .floating-images .sixth-image {
+  @apply absolute  top-0 right-27;
+}
+.testimonial-section .floating-images .seventh-image {
+  @apply absolute bottom-0 left-0;
+}
+.testimonial-section .floating-images .eighth-image {
+  @apply absolute bottom-85 right-0;
+}
+.testimonial-section .testimonial-slider {
+  @apply pr-20;
+}
+/* slide area leaves 30px on right for pagination */
+.testimonial-section .testimonial-slider .testimonial-slides-area {
+  @apply w-[calc(100%_-_30px)];
+}
+/* slide fade transitions */
+.testimonial-section .testimonial-slider .testimonial-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+.testimonial-section .testimonial-slider .testimonial-slide.active {
+  position: relative;
+  opacity: 1;
+  pointer-events: auto;
+}
+/* vertical pagination on right */
+.testimonial-section .testimonial-slider .swiper-pagination {
+  @apply absolute pl-0 w-30 right-0 top-0 h-full flex flex-col justify-center items-end gap-10 z-1 bg-black-800;
+}
+.testimonial-section .testimonial-slider .swiper-pagination .swiper-pagination-bullet {
+  @apply w-6 h-4 m-0 bg-gold opacity-30 duration-300 delay-100 ease-linear rounded-none border-none cursor-pointer p-0;
+}
+.testimonial-section .testimonial-slider .swiper-pagination .swiper-pagination-bullet-active {
+  @apply w-20 opacity-100;
+}
+
+.services-shape-top {
+  @apply absolute -top-58 left-0 w-full;
+}
+.why-wrapper .list-bx {
+  @apply bg-black-800/60 backdrop-blur-sm border border-solid border-white/40 rounded-10 p-40;
+}
+/* .growth-wrapper .title-black {
+    @apply text-black-900;
+} */
+.growth-wrapper .content.black p {
+  @apply text-black-700;
+}
+.company-profile-page {
+  @apply bg-white min-h-screen;
+}
+.company-profile-page:before,
+.benefits-wrapper-info:before {
+  @apply content-[''] absolute top-0 opacity-8 left-0 w-full h-full;
+  background-image: url("/icons/ui/Dots.png");
+  background-repeat: repeat;
+  background-attachment: scroll;
+}
+.accordion-item {
+  @apply border border-solid border-black-200 rounded-10 p-20 bg-gradient-to-b from-black-50/50 via-black-50/50 to-black-50;
+}
+
+.blog-wrapper:before,
+.single-blog:before {
+  @apply content-[''] absolute top-0 opacity-8 left-0 w-full h-full;
+  background-image: url("/icons/ui/Dots.png");
+  background-repeat: repeat;
+  background-attachment: scroll;
+}
+
+.single-blog .global-list li:before {
+  @apply top-10!;
+}
+
+.blog-wrapper .title {
+  @apply text-black-900 hover:text-gold transition-colors duration-300 ease-in-out;
+}
+.blog-wrapper .content.black p {
+  @apply text-black-600;
+}
+
+.glass-surface--svg {
+  -webkit-backdrop-filter: var(--filter-id, url(#glass-filter)) saturate(1) blur(6px);
+  backdrop-filter: var(--filter-id, url(#glass-filter)) saturate(1) blur(6px);
+}
+
+.glass-surface--fallback {
+  background: hsl(0 0% 100% / var(--glass-frost, 0.08));
+  border: 1px solid hsl(0 0% 100% / 0.12);
+  box-shadow: 0 24px 60px -24px hsl(0 0% 0% / 0.45);
+  -webkit-backdrop-filter: saturate(1) blur(6px);
+  backdrop-filter: saturate(1) blur(6px);
+}
+
+@keyframes banner-marquee-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.casestudy-content:before {
+  @apply content-[''] absolute left-0 bottom-full bg-cover bg-center size-32 block;
+  background-repeat: no-repeat;
+}
+.casestudy-content:after {
+  @apply content-[''] absolute left-full top-32 bg-cover bg-center size-32 block;
+  background-repeat: no-repeat;
+}
+.casestudy-link {
+  @apply bg-black-800 absolute right-0 top-0 max-lg:size-[calc(24px*2)] size-[calc(32px_*_2)] max-lg:rounded-bl-10 rounded-bl-32 origin-top-right opacity-0 scale-0 flex items-center justify-center z-1 duration-300 ease-linear;
+}
+.casestudy-link::before {
+  @apply content-[''] absolute right-full top-0 bg-cover bg-center size-32 block rotate-180;
+  background-repeat: no-repeat;
+}
+.casestudy-link::after {
+  @apply content-[''] absolute right-0 top-full bg-cover bg-center size-32 block rotate-180;
+  background-repeat: no-repeat;
+}
+.casestudy-link-icon {
+  @apply text-gold size-[1rem] -translate-x-full opacity-0 duration-300 delay-300 ease-linear;
+}
+
+.casestudy-item:hover .casestudy-link {
+  @apply opacity-100 scale-100;
+}
+.casestudy-item:hover .casestudy-link-icon {
+  @apply opacity-100 translate-x-0;
+}
+
+/* contact page css */
+.contact-form {
+  @apply w-full;
+}
+
+.contact-form input,
+.contact-form textarea {
+  @apply w-full bg-black-800/30 backdrop-blur-lg border border-black-600/60 rounded-10 py-12 px-15 text-white focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-1;
+}
+
+.contact-form textarea {
+  @apply h-150 resize-none;
+}
+
+.contact-form label {
+  @apply block mb-4 ms-4;
+}
+
+.contact-form label span {
+  @apply text-gold;
+}
+
+.contact-section .left .social-wrapper {
+  @apply text-white hover:text-gold transition-colors duration-300 ease-in-out;
+}
+
+.contact-counter-box {
+  @apply bg-black-700/70 rounded-10 p-24 md:p-24 relative z-1;
+}
+
+.contact-counter-box .h2 {
+  @apply mb-3 block;
+}
+
+.contact-inner-banner-right .icon svg {
+  @apply w-60 h-60 object-contain;
+}
+
+.contact-inner-banner-right .card-box {
+  @apply w-fit relative bg-black/30 backdrop-blur-lg border border-solid border-black-600/60 px-60 text-center p-30 rounded-full aspect-square;
+}
+
+/* We are Powerful – stats cards with connectors */
+.wearepowerful-stats-grid {
+  @apply relative max-w-6xl mx-auto grid grid-cols-3 gap-10;
+}
+
+.wearepowerful-stats-card {
+  @apply relative bg-black text-white rounded-3xl p-12
+  flex flex-col items-center justify-center text-center
+  shadow-2xl;
+}
+
+.wearepowerful-stats-card h3 {
+  @apply text-6xl font-bold text-gold mb-4;
+}
+
+.wearepowerful-stats-card span {
+  @apply uppercase tracking-[0.25em] text-xs text-white/70 mb-6;
+}
+
+.wearepowerful-stats-card p {
+  @apply text-body-4 text-white/60 max-w-xs mx-auto;
+}
+
+/* center card is slightly lower */
+.wearepowerful-stats-card--center {
+  @apply mt-14;
+}
+
+.wearepowerful-stats-grid::before {
+  @apply content-[''] absolute top-1/2 h-44 bg-white rounded-[2rem] -z-[2] [inset-inline:8%];
+}
+
+/* black connectors from center card to left/right cards */
+.wearepowerful-stats-card--center::before,
+.wearepowerful-stats-card--center::after {
+  @apply content-[''] absolute top-[-56px] w-28 h-28 bg-black -z-1;
+}
+
+.wearepowerful-stats-card--center::before {
+  @apply left-[-24px] rounded-tr-[56px];
+}
+
+.wearepowerful-stats-card--center::after {
+  @apply right-[-24px] rounded-tl-[56px];
+}
+
+/* responsive – stack cards on small screens */
+@media (max-width: 1024px) {
+  .wearepowerful-stats-grid {
+    @apply lg:grid-cols-1;
+  }
+
+  .wearepowerful-stats-grid::before {
+    @apply lg:before:hidden;
+  }
+
+  .wearepowerful-stats-card--center {
+    @apply lg:mt-0;
+  }
+
+  .wearepowerful-stats-card--center::before,
+  .wearepowerful-stats-card--center::after {
+    @apply lg:before:hidden lg:after:hidden;
+  }
+}
+
+/* Accordion styles moved from src/app/about-us/page.jsx */
+.wac-row {
+  @apply w-[100%] flex flex-wrap gap-0 items-stretch;
+}
+
+.wac-card {
+  @apply relative flex flex-col justify-between overflow-hidden cursor-pointer border border-white/9 rounded-none min-h-500 flex-[1_1_0] -ml-1;
+}
+
+.wac-body {
+  @apply pt-[25px] px-[25px] pb-[8px] flex-1 flex flex-col gap-1;
+}
+
+.wac-card.wac-open .wac-number {
+  @apply text-gray-500;
+}
+
+.wac-expand {
+  @apply grid grid-rows-[1fr] overflow-hidden;
+}
+
+.wac-expand-inner {
+  @apply overflow-hidden;
+}
+
+.wac-footer {
+  @apply px-25 pb-25 pt-0;
+}
+
+/* close button hidden by default; shown on hover of open card */
+.wac-btn {
+  @apply size-40 delay-100 rounded-full border-none cursor-pointer flex items-center justify-center bg-[rgba(255,255,255,0.13)] text-[rgba(255,255,255,0.75)] text-[32px] font-normal leading-none shrink-0 outline-none opacity-100 pointer-events-none scale-90 transition-[opacity,transform] duration-300 ease-linear;
+}
+
+.wac-card .wac-btn img {
+  @apply duration-300 delay-300 ease-linear;
+}
+
+.wac-card.wac-open .wac-btn img {
+  @apply rotate-45;
+}
+
+.wac-card.wac-open:hover .wac-btn {
+  @apply opacity-100 pointer-events-auto scale-100 bg-[#111];
+}
+
+.wac-card.wac-open .wac-btn {
+  @apply opacity-100 pointer-events-auto scale-100 bg-[#111];
+}
+
+.wac-btn:hover {
+  @apply scale-110;
+}
+
+.wac-btn:active {
+  @apply scale-90;
+}
+
+.wac-btn-icon {
+  @apply block leading-none;
+}
+
+@media (max-width: 959px) {
+  .wac-row {
+    @apply flex-col gap-20;
+  }
+
+  .wac-card {
+    @apply min-h-0 grow-0 flex-[0_0_auto] transition-[background,color] duration-0;
+  }
+
+  .wac-card:not(.wac-open) .wac-body {
+    @apply pb-0;
+  }
+
+  .wac-card.wac-open {
+    @apply grow-0 flex-[0_0_auto];
+  }
+
+  .wac-expand {
+    @apply grid grid-rows-[0fr] opacity-0 mt-0 [transition:grid-template-rows_0s_cubic-bezier(0.34,1.1,0.64,1),opacity_0.05s_ease,margin-top_0s_cubic-bezier(0.34,1.1,0.64,1)];
+  }
+
+  .wac-expand-inner {
+    @apply min-h-0 overflow-hidden;
+  }
+
+  .wac-card.wac-open .wac-expand {
+    @apply grid-rows-[1fr] opacity-100 mt-3;
+  }
+
+  .wac-card .wac-title,
+  .wac-title {
+    @apply whitespace-normal;
+  }
+  .wac-dot {
+    @apply hidden;
+  }
+}
+
+@media (max-width: 575px) {
+  .wac-body {
+    @apply pt-18 px-18 pb-6;
+  }
+
+  .wac-btn {
+    @apply w-9 h-9 text-2xl;
+  }
+}
+.key-bx {
+  @apply h-200 max-1199:h-160 flex items-center py-20 px-20 max-1199:!px-15 text-center;
+}
+.key-bx .title {
+  @apply max-w-190 mx-auto;
+}
+.key-bx:nth-child(1) {
+  @apply bg-[#323232] pl-50 max-1500:pl-60 max-1199:ml-0;
+}
+.key-bx:nth-child(2) {
+  @apply bg-[#414141];
+}
+.key-bx:nth-child(3) {
+  @apply bg-[#505050];
+}
+.key-bx:nth-child(4) {
+  @apply bg-[#636363];
+}
+.key-bx:nth-child(5) {
+  @apply bg-[#868686] pl-20 max-1500:pl-20 max-991:w-full;
+}
+.key-bx:nth-child(6) {
+  @apply bg-[#b0b0b0] pl-20 max-1500:pl-20 pr-60 max-991:w-full;
+}
+.key-bx:last-child {
+  @apply ps-20 pe-50;
+}
+.key-bx:last-child::before {
+  @apply content-[''] absolute -top-80 -right-1 bg-black-800 max-1199:hidden;
+  width: 160px;
+  aspect-ratio: 1;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+.key-bx:last-child::after {
+  @apply content-[''] absolute bottom-0 -right-95 bg-black-800 rotate-90 max-1199:hidden;
+  width: 160px;
+  aspect-ratio: 1;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.key-bx h3 {
+  @apply text-[22px] max-1500:text-body-2 leading-28 max-1500:leading-24;
+}
+.key-points .circle h2 {
+  @apply max-1500:text-[38px];
+}
+.key-bx svg {
+  @apply max-1199:hidden;
+}
+
+.key-bx .content p {
+  @apply text-white;
+}
+
+.contact-item .link,
+.sayhello .links {
+  @apply max-sm:text-body-5;
+}
+
+.bg-layer::after {
+  @apply content-[''] absolute inset-x-0 bottom-0 h-[14rem] bg-gradient-to-t from-[#4FECAA] from-[2%] to-transparent;
+}
+
+.blog-wrapper form input {
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position: right 1rem center;
+}
+.blog-wrapper .global-list li a span,
+.blog-wrapper .global-list li button span,
+.blog-inner-wrapper .global-list li a span,
+.blog-inner-wrapper .global-list li button span {
+  @apply leading-[1.5] text-body-5 transition-colors duration-300 ease-in-out min-w-24 px-5 w-auto;
+}
+.blog-wrapper .global-list li a:hover span,
+.blog-wrapper .global-list li button:hover span,
+.blog-inner-wrapper .global-list li a:hover span,
+.blog-inner-wrapper .global-list li button:hover span {
+  @apply text-gold;
+}
+
+.blog-inner-wrapper .global-list::-webkit-scrollbar {
+  @apply w-2;
+}
+
+.blog-inner-wrapper .global-list::-webkit-scrollbar-thumb {
+  @apply bg-black-50/30;
+}
+
+.blog-inner-wrapper form.search input {
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position: right 1rem center;
+}
+.inner-banner-wrapper ul li {
+  @apply capitalize;
+}
+.inner-banner-wrapper ul li:last-child span {
+  @apply opacity-65;
+}
+
+.common-content-wrapper.white .content.black ul li {
+  @apply text-black-500;
+}
+
+.common-content-wrapper.white .content.black ul {
+  @apply mt-20;
+}
+
+.casestudy-wrapper .casestudy-item .title h2 {
+  @apply max-1500:text-30 max-991:text-heading-6;
+}
+
+.case .tag li span {
+  text-box-trim: trim-both;
+}
+.case .tag li span,
+.bottom-links-wrapper span {
+  text-box-trim: trim-both;
+}
+
+.post-categories div::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.post-categories div::-webkit-scrollbar {
+  @apply h-3 bg-transparent;
+}
+
+.post-categories div::-webkit-scrollbar-thumb {
+  @apply bg-gold;
+}
+
+@media (max-width: 1500px) and (min-width: 1024px) {
+  .single-blog-categories {
+    left: 0;
+    right: 0;
+    width: auto;
+    max-width: none;
+    padding-left: 100px;
+    padding-right: 100px;
+    transform: translateX(0);
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .single-blog-categories > div {
+    width: 100%;
+    max-width: 55rem;
+    margin-left: 0;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 1280px) and (min-width: 1024px) {
+  .single-blog-categories {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+}
+
+.company-profile-article .profile {
+  @apply overflow-x-hidden overflow-y-auto max-md:py-0 h-[calc(100%-40px)];
+}
+.profile .content p {
+  @apply text-black-600;
+}
+
+.profile .title {
+  @apply tracking-normal;
+}
+
+.company-profile-article {
+  @apply flex flex-col items-center justify-between m-0 p-0 w-full h-screen min-h-screen relative max-md:gap-20 gap-40;
+}
+
+.profileslide .profile1 {
+  @apply w-full m-0 p-0;
+}
+
+.profileslide .profile1 .img img {
+  @apply block mx-auto;
+}
+
+/* profile slide fade */
+.profileslide .profile-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.profileslide .profile-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.profileslide .profile-slide:first-child {
+  @apply items-center justify-center;
+}
+
+.company-profile-article .company-profile-pagination {
+  @apply flex! max-lg:gap-0 gap-10 items-center justify-center max-lg:px-20;
+}
+
+.company-profile-article .swiper-pagination-bullet.previous-slide,
+.company-profile-article .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  @apply bg-black-800 opacity-100;
+}
+
+.company-profile-article .swiper-pagination-bullet {
+  @apply w-20 h-5 !m-0 p-0 cursor-pointer bg-black-200 opacity-100 rounded-none border-none;
+}
+.company-profile-article .grid-card .card {
+  @apply flex flex-col gap-20;
+}
+.company-profile-article .btn-link {
+  @apply flex flex-wrap gap-10 items-center text-black-800 duration-300 ease-linear hover:text-gold hover:gap-20 w-fit;
+}
+.company-profile-article .company-profile-card-icon {
+  @apply bg-black-800 p-20 rounded-full w-fit!;
+}
+
+.profileslide .profile2 ol {
+  @apply flex flex-col justify-start items-start m-0 p-0 pt-15 relative gap-15;
+}
+
+.profileslide .profile2 ol li {
+  @apply text-black-800 text-body-2 font-medium leading-[160%] m-0 p-0 list-item list-decimal list-inside;
+}
+
+.profileslide .profile2 ol li a {
+  @apply text-black-800 text-body-2 font-medium leading-[160%] m-0 mb-10 p-0 no-underline;
+}
+
+.profileslide .profile2 ol li a:hover {
+  @apply text-gold;
+}
+
+.profileslide .profile2 ol li span {
+  @apply m-0 ml-10;
+}
+
+.profile1,
+.profile2,
+.profile3,
+.profile4,
+.profile5,
+.profile6,
+.profile7,
+.profile8,
+.profile9,
+.profile10,
+.profile11,
+.profile12 {
+  @apply w-full mx-auto h-full;
+}
+
+.service-grid-card .card .detail {
+  @apply flex items-center gap-20;
+}
+
+article.counter1::before,
+article.counter5::before,
+article.counter9::before,
+article.counter13::before {
+  @apply content-[''] absolute inset-0 bg-gold/8 blur-sm;
+  clip-path: circle(30% at 15% 80%);
+}
+
+article.counter2::before,
+article.counter6::before,
+article.counter10::before,
+article.counter14::before {
+  @apply content-[''] absolute inset-0 bg-gold/8 blur-sm;
+  clip-path: circle(30% at 85% 20%);
+}
+
+article.counter3::before,
+article.counter7::before,
+article.counter11::before,
+article.counter15::before {
+  @apply content-[''] absolute inset-0 bg-gold/8 blur-sm;
+  clip-path: circle(30% at 15% 20%);
+}
+article.counter4::before,
+article.counter8::before,
+article.counter12::before,
+article.counter16::before {
+  @apply content-[''] absolute inset-0 bg-gold/8 blur-sm;
+  clip-path: circle(30% at 85% 80%);
+}
+
+.company-profile-prev,
+.company-profile-next {
+  @apply absolute top-1/2 -translate-y-1/2 z-2 flex items-center justify-center 575:w-150 w-60 h-full bg-transparent cursor-pointer duration-300 ease-linear;
+}
+
+.company-profile-prev {
+  @apply left-0;
+  cursor:
+    url(/left.svg) 32 32,
+    auto;
+}
+.company-profile-next {
+  @apply right-0;
+  cursor:
+    url(/right.svg) 32 32,
+    auto;
+}
+
+.company-profile-prev:disabled,
+.company-profile-next:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.company-profile-prev:not(:disabled):hover,
+.company-profile-next:not(:disabled):hover {
+  background: rgba(0, 0, 0, 0);
+}
+
+.single-blog .global-content h2 {
+  @apply text-34 max-sm:text-heading-5 max-xl:text-heading-4;
+}
+
+.single-blog .global-content h3 {
+  @apply text-24 mt-25!;
+}
+
+.single-blog .global-content table {
+  @apply 575:max-w-8/12 mx-auto;
+}
+
+.single-blog .global-content table th {
+  @apply bg-black! text-white;
+}
+
+.single-blog .global-content table + table {
+  @apply mt-20;
+}
+
+.single-blog .global-list.content p img,
+.single-blog .global-list.content img {
+  @apply object-contain my-20;
+}
+
+.single-blog .global-list.content a {
+  @apply no-underline transition-all duration-300 ease-in-out hover:underline;
+}
+
+.approach-section .global-list li {
+  @apply text-black-600;
+}
+
+.approach-section .solution-title {
+  @apply inline-flex items-center gap-10;
+}
+
+.approach-section .solution-title::before,
+.approach-section .solution-title::after {
+  @apply content-[''] w-20 h-20 inline-block shrink-0 bg-no-repeat bg-center bg-contain;
+}
+
+.approach-section .solution-title::before {
+  background-image: url("/icons/ui/left-arrow.svg");
+}
+
+.approach-section .solution-title::after {
+  background-image: url("/icons/ui/right-icon.svg");
+}
+
+@media (max-width: 1024px) {
+  .approach-section .solution-title::before,
+  .approach-section .solution-title::after {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.thank-you-icon {
+  isolation: isolate;
+  animation: thankYouIconBreath 3s ease-in-out infinite;
+}
+
+.thank-you-icon-halo {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(237, 168, 0, 0.45);
+  animation: thankYouHalo 3s ease-out infinite;
+  pointer-events: none;
+}
+
+.thank-you-icon svg {
+  overflow: visible;
+}
+
+.thank-you-icon-ring {
+  fill: none;
+  stroke: rgba(237, 168, 0, 0.5);
+  stroke-width: 1.25;
+  stroke-dasharray: 3 4;
+  transform-origin: 50% 50%;
+  animation: thankYouRingRotate 4s linear infinite;
+}
+
+.check-path {
+  stroke-dasharray: 26;
+  stroke-dashoffset: 26;
+  animation: drawCheck 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes drawCheck {
+  0% {
+    stroke-dashoffset: 26;
+    opacity: 0.8;
+  }
+  22% {
+    stroke-dashoffset: 26;
+    opacity: 0.8;
+  }
+  45%,
+  72% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -26;
+    opacity: 0.9;
+  }
+}
+
+@keyframes thankYouRingRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes thankYouIconBreath {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes thankYouHalo {
+  0% {
+    box-shadow: 0 0 0 0 rgba(237, 168, 0, 0.4);
+    opacity: 0.8;
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgba(237, 168, 0, 0);
+    opacity: 0;
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(237, 168, 0, 0);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thank-you-icon,
+  .thank-you-icon-halo,
+  .thank-you-icon-ring,
+  .check-path {
+    animation: none;
+  }
+
+  .check-path {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+.ofc-det div:first-child h6,
+.ofc-det div:first-child p {
+  @apply mb-10;
+}
+
+.ofc-det div:first-child p a {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.ofc-det div:first-child p a:hover {
+  @apply text-gold;
+}
+
+/* Case Study Single Start */
+.short-desc {
+  @apply text-2xl max-1025:text-body-2;
+}
+
+.category-list {
+  @apply flex flex-wrap items-center gap-60 max-1199:gap-40 max-769:gap-20 pb-100 max-lg:pb-40 border-b border-[#4f4f4f];
+}
+
+.category-list h2,
+.category-list p,
+.product-vision-section p {
+  @apply text-22 max-1025:text-body-2;
+}
+
+.challange-section img {
+  @apply max-991:max-w-300 max-991:mx-auto;
+}
+
+.key-point-section .global-list li:before,
+.approach-section .global-list li:before,
+.takeaway-section .global-list li:before {
+  @apply top-10;
+}
+
+.approach-section h3,
+.result-section .sub-head h3,
+.takeaway-section h3,
+.challange-section .sub-heading h3 {
+  @apply text-36 max-1024:text-heading-5;
+}
+
+.feedback-section h2 {
+  @apply max-1500:text-heading-3 max-1025:text-heading-4;
+}
+/* Case Study Single End */
+
+/* Reveal-on-scroll utilities (Framer Motion replacement). Apply `reveal` + a
+   direction modifier to any element; when it enters the viewport, `useReveal`
+   adds `.is-visible` and the element animates in. Respects reduced-motion. */
+.reveal {
+  opacity: 0;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+  will-change: opacity, transform;
+}
+.reveal-up {
+  transform: translateY(30px);
+}
+.reveal-down {
+  transform: translateY(-30px);
+}
+.reveal-left {
+  transform: translateX(-30px);
+}
+.reveal-right {
+  transform: translateX(30px);
+}
+.reveal-scale {
+  transform: scale(0.95);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal-delay-100 {
+  transition-delay: 0.1s;
+}
+.reveal-delay-200 {
+  transition-delay: 0.2s;
+}
+.reveal-delay-300 {
+  transition-delay: 0.3s;
+}
+.reveal-delay-400 {
+  transition-delay: 0.4s;
+}
+.reveal-delay-500 {
+  transition-delay: 0.5s;
+}
+
+/* FAQ accordion (replaces framer-motion AnimatePresence/height animation).
+   Uses `max-height` transition instead of `grid-template-rows` so the DOM
+   matches the original single-wrapper structure — keeps the cascade simple
+   and avoids any inherited styling surprises. Scoped to `.faq-item` to
+   avoid colliding with the existing global `.accordion-item` card styling. */
+.faq-item {
+  background: transparent;
+}
+.faq-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.55s cubic-bezier(0.04, 0.62, 0.23, 0.98),
+    opacity 0.4s ease;
+}
+.faq-item.is-open .faq-content {
+  max-height: 1200px;
+  opacity: 1;
+}
+.faq-icon-plus,
+.faq-icon-minus {
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+.faq-icon-minus {
+  opacity: 0;
+  transform: scale(0.8);
+}
+.faq-item.is-open .faq-icon-plus {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.8);
+}
+.faq-item.is-open .faq-icon-minus {
+  opacity: 1;
+  transform: scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-content,
+  .faq-icon-plus,
+  .faq-icon-minus {
+    transition: none;
+  }
+}
+
+/* PageHeader CSS replacements for framer-motion animations. All scoped to
+   existing class names so no cascade collision risk. */
+
+/* 1. Header slides up / fades out when apply-job modal is open. */
+.header {
+  transition:
+    transform 0.35s ease-out,
+    opacity 0.35s ease-out;
+}
+.header.header-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+/* 2. Phone "ring" shake animation on CTA icons (repeating idle wiggle). */
+@keyframes ring-shake {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  14% {
+    transform: rotate(15deg);
+  }
+  28% {
+    transform: rotate(-15deg);
+  }
+  42% {
+    transform: rotate(10deg);
+  }
+  57% {
+    transform: rotate(-10deg);
+  }
+  71% {
+    transform: rotate(5deg);
+  }
+  85% {
+    transform: rotate(-5deg);
+  }
+}
+.ring-shake {
+  display: inline-flex;
+  animation: ring-shake 1.8s ease-in-out infinite;
+  transform-origin: center;
+}
+.ring-shake-parent:hover .ring-shake {
+  animation-play-state: paused;
+}
+
+/* 3. Hamburger icon (3 bars → X). Parent toggles .is-open. */
+.hamburger-bar {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+.hamburger.is-open .hamburger-bar--1 {
+  transform: rotate(45deg) translateY(5px);
+}
+.hamburger.is-open .hamburger-bar--2 {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+.hamburger.is-open .hamburger-bar--3 {
+  transform: rotate(-45deg) translateY(-5px);
+}
+
+/* 4. Mobile menu panel reveal (clip-path animation replaces AnimatePresence). */
+.mobile-menu-panel {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.4s linear;
+}
+.mobile-menu-panel.is-open {
+  clip-path: inset(0 0 0% 0);
+}
+
+/* 5. Submenu arrow rotate on expand. */
+.submenu-arrow {
+  transition: transform 0.3s ease;
+}
+.submenu-arrow.is-open {
+  transform: rotate(180deg);
+}
+
+/* 6. Mobile submenu expand/collapse (replaces AnimatePresence height:auto↔0). */
+.mobile-submenu {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease;
+}
+.mobile-submenu.is-open {
+  max-height: 1000px;
+  opacity: 1;
+}
+
+/* 7. Desktop mega-menu submenu crossfade (replaces AnimatePresence mode="wait"). */
+@keyframes mega-submenu-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.mega-submenu-panel {
+  animation: mega-submenu-in 0.25s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header,
+  .hamburger-bar,
+  .submenu-arrow,
+  .mobile-menu-panel,
+  .mobile-submenu {
+    transition: none;
+  }
+  .ring-shake,
+  .mega-submenu-panel {
+    animation: none;
+  }
+}
+
+/* Footer marquee (replaces framer-motion motion.div + useAnimationFrame +
+   useMotionValue in PageFooter). Scrolls the `footer_bottom_text` string
+   horizontally forever. Two duplicate groups of 8 copies each so the -50%
+   transform creates a seamless loop. Pauses on hover. */
+@keyframes footer-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.footer-marquee {
+  animation: footer-marquee-scroll 60s linear infinite;
+  will-change: transform;
+}
+.footer-marquee:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer-marquee {
+    animation: none;
+  }
+}
+
+/* Rotating-word entrance (replaces framer-motion AnimatePresence mode="wait"
+   on Accordion.jsx). Each new word remounts via a React `key` change and
+   plays this entrance on mount. Exit is instant (acceptable tradeoff). */
+@keyframes rotating-word-in {
+  from {
+    opacity: 0;
+    transform: translateY(50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rotating-word {
+  animation: rotating-word-in 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .rotating-word {
+    animation: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-up,
+  .reveal-down,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Tech-icon stroke animations (ReactJs, NextJs, Shopify, WordPress, etc.).
+   Replaces framer-motion's `pathLength: [0, 1, 0]` + fill fade patterns.
+   Paths MUST include the `pathLength="1"` SVG attribute so dasharray/offset
+   normalizes to [0, 1] regardless of the actual path length. */
+
+/* Simple draw-in/erase-out loop — for multi-stroke outlined icons
+   (ReactJs ellipses, AngularJs triangles, etc.). */
+@keyframes icon-stroke-cycle {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  40% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  60% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -1;
+    opacity: 0;
+  }
+}
+.icon-stroke-cycle {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: icon-stroke-cycle 2.5s ease-in-out infinite;
+}
+
+/* Gentle pulse (used for the centre node in ReactJs / a few others). */
+@keyframes icon-pulse-cycle {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+}
+.icon-pulse-cycle {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: icon-pulse-cycle 2s ease-in-out infinite;
+}
+
+/* One-shot SVG entry — opacity + rotate on mount. */
+@keyframes icon-svg-enter {
+  from {
+    opacity: 0;
+    transform: rotate(-30deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0);
+  }
+}
+.icon-svg-enter {
+  animation: icon-svg-enter 0.6s ease-out both;
+  transform-origin: center;
+}
+
+/* Draw-then-fill cycle for filled icons (Shopify, WordPress, Sage, etc.).
+   Runs stroke-reveal, then fades the fill in, holds, fades everything out,
+   then loops. Kept linear-ish to match framer-motion's custom ease. */
+@keyframes icon-stroke-fill-cycle {
+  0% {
+    stroke-dashoffset: 1;
+    fill-opacity: 0;
+    stroke-opacity: 1;
+  }
+  35% {
+    stroke-dashoffset: 0;
+    fill-opacity: 0;
+    stroke-opacity: 1;
+  }
+  55% {
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+    stroke-opacity: 0;
+  }
+  85% {
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+    stroke-opacity: 0;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    fill-opacity: 0;
+    stroke-opacity: 0;
+  }
+}
+.icon-stroke-fill-cycle {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  fill-opacity: 0;
+  animation: icon-stroke-fill-cycle 8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-stroke-cycle,
+  .icon-pulse-cycle,
+  .icon-svg-enter,
+  .icon-stroke-fill-cycle {
+    animation: none;
+  }
+  .icon-stroke-cycle,
+  .icon-stroke-fill-cycle {
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+    stroke-opacity: 1;
+  }
+}
+
+/* Continuous rotation loop — used on the 404 page ring. */
+@keyframes ring-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ring-rotate {
+  animation: ring-rotate 5s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ring-rotate {
+    animation: none;
+  }
+}
+
+/* Innovation-workflow slide reveal — replaces framer-motion AnimatePresence
+   with direction-dependent clip-path. `data-direction="1"` means the user
+   scrolled down into a later step; the new slide wipes in from the top.
+   `data-direction="-1"` wipes in from the bottom. */
+@keyframes innovation-slide-down {
+  from {
+    clip-path: inset(100% 0% 0% 0%);
+  }
+  to {
+    clip-path: inset(0% 0% 0% 0%);
+  }
+}
+@keyframes innovation-slide-up {
+  from {
+    clip-path: inset(0% 0% 100% 0%);
+  }
+  to {
+    clip-path: inset(0% 0% 0% 0%);
+  }
+}
+.innovation-slide[data-direction="1"] {
+  animation: innovation-slide-down 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.innovation-slide[data-direction="-1"] {
+  animation: innovation-slide-up 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .innovation-slide[data-direction="1"],
+  .innovation-slide[data-direction="-1"] {
+    animation: none;
+  }
+}
+
+/* Stroke-erase ring on EnhanceYourBusiness — matches the original
+   framer-motion keyframes: hold the full ring for 12% of the cycle, then
+   erase over the remaining 88% on an 8s linear loop. The actual
+   circumference is baked into the SVG via `stroke-dasharray`. */
+@keyframes stroke-erase-ring {
+  0%,
+  12% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -2075;
+  }
+}
+.stroke-erase-ring {
+  animation: stroke-erase-ring 8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stroke-erase-ring {
+    animation: none;
+  }
+}
+
+/* Active-step fade on recruitment process — the key prop on the wrapper
+   remounts this node per step, so the animation replays from zero each
+   time. Mirrors the framer-motion AnimatePresence opacity+y fade. */
+@keyframes recruitment-step-fade {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.recruitment-step-fade {
+  animation: recruitment-step-fade 0.32s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .recruitment-step-fade {
+    animation: none;
+  }
+}
+
+/* Apply-job modal (career page) — replaces framer-motion AnimatePresence
+   overlay + side panel. Two-phase: while mounted-but-not-.open the overlay
+   is transparent and panel sits 100% off-screen; adding `.open` (one frame
+   after mount via requestAnimationFrame) triggers the transition in.
+   Removing `.open` reverses, and we unmount after transitionend. */
+.apply-modal-overlay {
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.04, 0.62, 0.23, 0.98);
+}
+.apply-modal-overlay.open {
+  opacity: 1;
+}
+.apply-modal-panel {
+  transform: translateX(100%);
+  transition: transform 0.6s cubic-bezier(0.04, 0.62, 0.23, 0.98);
+  will-change: transform;
+}
+.apply-modal-panel.open {
+  transform: translateX(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .apply-modal-overlay,
+  .apply-modal-panel {
+    transition: none;
+  }
+}
+
+/* Horizontal logo marquee — replaces framer-motion useAnimationFrame loop on
+   WebTechnologyLogoSlider. The track holds two copies of the logo row, so
+   translating -50% wraps seamlessly. Hovering the parent pauses the animation
+   (purely CSS — no JS state needed for pause-on-hover). */
+@keyframes logo-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.logo-marquee-track {
+  animation: logo-marquee-scroll var(--logo-marquee-duration, 40s) linear infinite;
+  will-change: transform;
+}
+.logo-marquee-track:hover,
+.logo-marquee-pause:hover .logo-marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-marquee-track {
+    animation: none;
+  }
+}
+
+/* Vertical column marquee — replaces framer-motion `animate y: [0, -half]`
+   loop on IndustriesHelped columns. Each column exposes `--marquee-duration`
+   as a CSS var; the track translates -50% of its own height on an infinite
+   linear loop (the content is doubled in JS, so 50% == one list length). */
+@keyframes industries-col-scroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+.industries-col-track {
+  animation: industries-col-scroll var(--marquee-duration, 60s) linear infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .industries-col-track {
+    animation: none;
+  }
+}
+
+/* Video/image entry reveal — scales up from 0.3 and rounds off its corners
+   as the element enters the viewport. Replaces framer-motion scroll-linked
+   useTransform on TransformativeSolutions / TechnologyIntroSection where the
+   effect was a one-shot entry rather than a scrubbed scroll animation. */
+@keyframes media-scale-in {
+  from {
+    transform: scale(0.3);
+    border-radius: 300px;
+  }
+  to {
+    transform: scale(1);
+    border-radius: 0;
+  }
+}
+.media-scale-reveal {
+  transform: scale(0.3);
+  border-radius: 300px;
+  transform-origin: center center;
+  will-change: transform, border-radius;
+}
+.media-scale-reveal.is-visible {
+  animation: media-scale-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .media-scale-reveal,
+  .media-scale-reveal.is-visible {
+    transform: none;
+    border-radius: 0;
+    animation: none;
+  }
+}
+
+/* Rotating conic-gradient border (replaces framer-motion --angle animation
+   on the active "approach" card). @property lets the angle interpolate
+   smoothly; the keyframes just sweep it 360° on a 3s loop. */
+@property --rotating-border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 135deg;
+}
+@keyframes rotating-border-sweep {
+  from {
+    --rotating-border-angle: 135deg;
+  }
+  to {
+    --rotating-border-angle: 495deg;
+  }
+}
+.rotating-border {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: linear-gradient(
+    var(--rotating-border-angle),
+    #eda800 0%,
+    #1a1a1a 25%,
+    #1a1a1a 65%,
+    #1a1a1a 100%
+  );
+  padding: 2px;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+  animation: rotating-border-sweep 3s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rotating-border {
+    animation: none;
+  }
+}

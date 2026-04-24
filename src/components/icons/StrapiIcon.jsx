@@ -1,0 +1,50 @@
+"use client";
+
+import React from "react";
+
+const TOP_RIGHT_D =
+  "M249.868148,1.42108547e-14 L81.6129672,1.42108547e-14 L81.6129672,84.3619834 L164.402564,84.3619834 C167.35201,84.3619834 169.744773,86.7547464 169.744773,89.7041929 L169.744773,171.351123 L255.210366,171.351123 L255.210366,5.3519758 C255.212951,3.93344238 254.651257,2.57212016 253.649118,1.56814827 C252.646978,0.56417638 251.286684,1.42108547e-14 249.868148,1.42108547e-14 Z";
+
+const BOTTOM_LEFT_D =
+  "M81.6032009,0 L81.6032009,84.3619834 L2.67132424,84.3619834 C1.58669272,84.3600599 0.610497706,83.7036101 0.199569944,82.6998335 C-0.211357818,81.6960568 0.0242672254,80.5435101 0.796179436,79.7815516 L81.6032009,0 Z M174.295906,251.220572 C173.527464,251.975341 172.381399,252.195816 171.387771,251.780027 C170.394142,251.364238 169.746654,250.393242 169.744773,249.316128 L169.744773,171.351123 L255.210357,171.351123 L174.295906,251.210806 Z";
+
+const CENTER_D =
+  "M81.6032009,84.3619834 L167.078552,84.3619834 C168.543508,84.3619834 169.744773,85.5534817 169.744773,87.028205 L169.744773,171.351123 L86.9551767,171.351123 C84.0047559,171.351123 81.6129672,168.959334 81.6129672,166.008913 L81.6129672,84.3619834 Z";
+
+export default function StrapiIcon({ size = 250, color = "currentColor", strokeWidth = 6 }) {
+  const common = {
+    fill: color,
+    stroke: color,
+    strokeWidth,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    pathLength: "1",
+    className: "icon-stroke-fill-cycle",
+  };
+
+  return (
+    <div
+      style={{
+        display: "block",
+        position: "relative",
+        width: size,
+        height: size,
+        lineHeight: 0,
+      }}
+      className="mx-auto"
+    >
+      <svg
+        className="icon-svg-enter"
+        width={size}
+        height={size}
+        viewBox="0 -2 256 256"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid"
+      >
+        <path d={TOP_RIGHT_D} {...common} />
+        <path d={BOTTOM_LEFT_D} {...common} fillOpacity={0.7} style={{ animationDelay: "0.2s" }} />
+        <path d={CENTER_D} {...common} fillOpacity={0.7} style={{ animationDelay: "0.4s" }} />
+      </svg>
+    </div>
+  );
+}

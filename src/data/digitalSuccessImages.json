@@ -1,0 +1,26 @@
+[
+  {
+    "image_gallery": "/images/industries/Electronics-and-Gadgets.avif",
+    "alt": "Electronics and Gadgets"
+  },
+  {
+    "image_gallery": "/images/industries/Health-and-Wellness.avif",
+    "alt": "Health and Wellness"
+  },
+  {
+    "image_gallery": "/images/industries/Fashion-and-Apparel.avif",
+    "alt": "Fashion and Apparel"
+  },
+  {
+    "image_gallery": "/images/industries/HomeDecor-and-Furniture.avif",
+    "alt": "Home Decor and Furniture"
+  },
+  {
+    "image_gallery": "/images/industries/Beauty-and-Personalcare.avif",
+    "alt": "Beauty and Personal Care"
+  },
+  {
+    "image_gallery": "/images/industries/Hospitality.avif",
+    "alt": "Hospitality"
+  }
+]

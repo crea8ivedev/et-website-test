@@ -1,0 +1,197 @@
+.eye-container {
+  width: 200px;
+}
+
+.eye-lid {
+  transform-origin: center;
+  animation: blink 4s infinite;
+}
+
+@keyframes blink {
+  0%,
+  90%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0);
+  }
+}
+
+.pupil {
+  animation: movePupil 4s infinite;
+}
+
+@keyframes movePupil {
+  0%,
+  90%,
+  100% {
+    transform: translateX(0);
+  }
+  30% {
+    transform: translateX(-5px);
+  }
+  60% {
+    transform: translateX(5px);
+  }
+}
+
+.smile-path {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  @apply stroke-white stroke-1 fill-transparent duration-300 ease-linear;
+}
+
+.group:hover .smile-path {
+  stroke-dashoffset: 0;
+  stroke: var(--color-gold);
+}
+
+.menu .group .smile {
+  @apply absolute right-0 -bottom-8;
+}
+
+.menu .group .sad {
+  @apply absolute right-0 -bottom-8;
+}
+
+.main-menu .group.active .arrow svg {
+  @apply duration-300 ease-linear fill-white;
+}
+
+.header.is-hidden {
+  @apply -translate-y-full duration-300 delay-150 ease-linear;
+}
+
+.header .nav {
+  backdrop-filter: url(#asimov-glass-d8yv6vphp) brightness(0.9) saturate(1.3);
+}
+
+.header-nav li button {
+  @apply cursor-pointer;
+}
+
+.header .bg {
+  @apply rounded-10 absolute top-0 left-0 w-full h-full pointer-events-none;
+
+  /* Base glass */
+  backdrop-filter: blur(4px) saturate(180%);
+
+  /* Soft bottom fade */
+  mask: linear-gradient(to bottom, white 70%, white 100%);
+}
+
+/* Specular highlight - glass upar "sheen" */
+.header .bg::before {
+  content: "";
+  @apply absolute inset-0 rounded-10 pointer-events-none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  mask: linear-gradient(to bottom, white 70%, white 100%);
+}
+
+/* Refraction edge - glass ni "thickness" visible kare */
+.header .bg::after {
+  content: "";
+  @apply absolute inset-0 rounded-10 pointer-events-none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0px, transparent 2px);
+  mask: linear-gradient(to bottom, white 70%, white 100%);
+}
+
+/* Footer CSS  */
+.footer .contact-section h5 {
+  @apply max-769:text-24;
+}
+.footer .contact-section .down-arrow {
+  @apply w-24 h-24;
+}
+.footer .contact-section .link {
+  @apply text-gray-400 hover:text-gold max-w-350 max-1199:max-w-270 max-1199:text-body-5 max-1025:text-body-4;
+}
+.footer .contact-section .icon {
+  @apply w-40 h-40 border border-solid border-gray-400 rounded-full flex items-center justify-center max-1025:w-36 max-1025:h-36;
+}
+.footer .contact-section .icon img {
+  @apply w-20 h-20 max-1025:w-16 max-1025:h-16;
+}
+.footer .footer-links-wrapper {
+  @apply flex flex-col gap-20 max-769:gap-12;
+}
+.footer .footer-links-wrapper .footer-link {
+  @apply relative text-body-1 max-1366:text-body-4 opacity-60;
+}
+.footer .footer-links-wrapper .footer-link:hover {
+  @apply text-gold opacity-100;
+}
+.footer .footer-links-wrapper .footer-link::before {
+  @apply content-[""] absolute top-1/2 left-0 -translate-y-1/2 w-16 h-16 opacity-0 transition-all ease-in-out duration-300 max-1025:hidden;
+  background-image: url("/images/brand/ET-logo.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.footer .footer-links-wrapper .footer-link:hover::before {
+  @apply opacity-100 -left-25 transition-all ease-in-out duration-300;
+}
+.contact-item a:hover {
+  @apply text-gold opacity-100;
+}
+.footer .footer-toggle-arrow {
+  @apply rotate-40;
+}
+.footer .technology-grid {
+  @apply grid grid-cols-3 max-769:grid-cols-2 max-1025:mt-20 max-769:mt-12 max-769:gap-20 gap-120 max-1600:gap-80 max-1441:gap-60 max-1199:gap-40 overflow-hidden max-769:pl-16;
+}
+.footer-mobile-menu .pre-heading span {
+  @apply max-1025:text-white;
+}
+.footer .link-wrapper.open .pre-heading span {
+  @apply max-1025:text-gold;
+}
+.footer .link-wrapper.open .footer-mobile-menu img {
+  filter: brightness(0) saturate(100%) invert(78%) sepia(31%) saturate(7359%) hue-rotate(8deg)
+    brightness(100%) contrast(104%);
+}
+.footer .bottom-links-wrapper .content p {
+  @apply text-gray-400 text-center;
+}
+.footer .bottom-links-wrapper .links a {
+  @apply text-gray-400 hover:text-gold;
+}
+
+.sayhello .content p a {
+  @apply duration-300 ease-linear hover:text-gold;
+}
+
+.applyModal::-webkit-scrollbar,
+.form-inner::-webkit-scrollbar {
+  @apply w-2;
+}
+.applyModal::-webkit-scrollbar-thumb,
+.form-inner::-webkit-scrollbar-thumb {
+  @apply bg-gold/30;
+}
+
+.cta-check input:checked + span svg {
+  @apply opacity-100;
+}
+
+.footer-main-link {
+}
+
+footer .site-footer-inner .btn-custom a {
+  @apply text-54 max-1500:text-40 max-1199:text-heading-4 max-991:text-heading-5 max-639:text-heading-6;
+}
+
+.footer-main-link {
+  @apply text-transparent bg-clip-text bg-gradient-to-br from-white via-gold to-gold;
+}
+footer .secondary-link-wrapper a {
+  @apply text-14;
+}
+footer .sayhello a {
+  @apply text-18 hover:text-gold max-1366:text-body-4 max-sm:text-body-5;
+}

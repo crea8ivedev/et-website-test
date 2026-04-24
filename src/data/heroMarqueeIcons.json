@@ -1,0 +1,122 @@
+[
+  {
+    "icon": "/icons/tech/tailwindcss.svg",
+    "link": {
+      "title": "Tailwind CSS Development Services",
+      "url": "/tailwind-css-development-services/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/strapi.svg",
+    "link": {
+      "title": "Strapi",
+      "url": "/strapi-custom-development/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/craftcms.svg",
+    "link": {
+      "title": "Craft CMS",
+      "url": "/craft-cms-development-agency/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/hygrogen.svg",
+    "link": {
+      "title": "Shopify Hydrogen Development Services",
+      "url": "/shopify-hydrogen-development-services/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/gatsby.svg",
+    "link": {
+      "title": "Gatsby JS",
+      "url": "/gatsby-js-web-development-agency/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/nextjs.svg",
+    "link": {
+      "title": "Next JS",
+      "url": "/next-js-development-agency/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/reactjs.svg",
+    "link": {
+      "title": "React JS",
+      "url": "/react-js-development-company/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/vuejs.svg",
+    "link": {
+      "title": "Vue JS",
+      "url": "/vue-js-development-agency/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/nodejs.svg",
+    "link": {
+      "title": "Node JS",
+      "url": "/node-js-development-agency/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/oxygen.svg",
+    "link": {
+      "title": "Oxygen",
+      "url": "#",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/shopify.svg",
+    "link": {
+      "title": "Shopify",
+      "url": "/shopify-website-development-agency/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/webflow.svg",
+    "link": {
+      "title": "Webflow",
+      "url": "/webflow-development-agency/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/bigcommerce.svg",
+    "link": {
+      "title": "BigCommerce",
+      "url": "/bigcommerce-development-company-in-india/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/builderio.svg",
+    "link": {
+      "title": "Builder.io",
+      "url": "/builder-io-development-services/",
+      "target": ""
+    }
+  },
+  {
+    "icon": "/icons/tech/rootsio.svg",
+    "link": {
+      "title": "Roots.io",
+      "url": "/wordpress-development-roots-io-stack/",
+      "target": ""
+    }
+  }
+]

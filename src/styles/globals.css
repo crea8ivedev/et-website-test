@@ -1,0 +1,105 @@
+@theme {
+  --font-body: "DM Sans", sans-serif;
+  --font-heading: "Aeonik", sans-serif;
+
+  --color-black: #000000;
+  --color-black-50: #f5f5f5;
+  --color-black-100: #e0e0e0;
+  --color-black-200: #c2c2c2;
+  --color-black-300: #a3a3a3;
+  --color-black-400: #858585;
+  --color-black-500: #666666;
+  --color-black-600: #4a4a4a;
+  --color-black-700: #2e2e2e;
+  --color-black-800: #1a1a1a;
+  --color-black-900: #0d0d0d;
+
+  --color-white: #ffffff;
+  --color-gold: #eda800;
+  --color-black-gold: #7a5c00;
+  --color-boho-black: #302d2e;
+  --color-wild-sand: #f4f4f4;
+  --color-gray: #818181;
+  --color-gray-200: #868686;
+  --color-gray-300: #858585;
+  --color-gray-400: #b3b3b3;
+  --color-gray-500: #dbdbdb;
+  --color-semigray-100: #e5e5e5;
+  --color-gray-600: #cccccc;
+  --color-gray-700: #999999;
+
+  --spacing: 1px;
+
+  --text-button: 16px;
+
+  --text-body-1: 20px;
+  --text-body-2: 18px;
+  --text-body-3: 17px;
+  --text-body-4: 16px;
+  --text-body-5: 14px;
+  --text-body-6: 12px;
+
+  --text-heading-1: clamp(32px, 4vw, 64px);
+  --text-heading-2: 48px;
+  --text-heading-3: 38px;
+  --text-heading-4: 32px;
+  --text-heading-5: 28px;
+  --text-heading-6: 24px;
+
+  --text-8: 8px;
+  --text-9: 9px;
+  --text-10: 10px;
+  --text-12: 12px;
+  --text-14: 14px;
+  --text-15: 15px;
+  --text-17: 17px;
+  --text-18: 18px;
+  --text-22: 22px;
+  --text-24: 24px;
+  --text-28: 28px;
+  --text-30: 30px;
+  --text-32: 32px;
+  --text-34: 34px;
+  --text-35: 35px;
+  --text-36: 36px;
+  --text-40: 40px;
+  --text-48: 48px;
+  --text-54: 54px;
+  --text-64: 64px;
+  --text-72: 72px;
+  --text-80: 80px;
+  --text-100: 100px;
+
+  --shadow-dropdown: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --shadow-header: 0 4px 60px 0 rgba(31, 36, 49, 0.1);
+
+  --tracking-001: 0.001em;
+  --tracking-01: 0.1em;
+  --tracking-02: 0.02em;
+  --tracking-05: 0.05em;
+
+  --radius-10: 10px;
+  --radius-32: 32px;
+
+  --breakpoint-2100: 2100px;
+  --breakpoint-1920: 1920px;
+  --breakpoint-1600: 1600px;
+  --breakpoint-1500: 1500px;
+  --breakpoint-1441: 1441px;
+  --breakpoint-1439: 1439px;
+  --breakpoint-1366: 1366px;
+  --breakpoint-1199: 1199.99px;
+  --breakpoint-1025: 1025.99px;
+  --breakpoint-1024: 1024px;
+  --breakpoint-991: 991.99px;
+  --breakpoint-819: 819.99px;
+  --breakpoint-769: 769px;
+  --breakpoint-639: 639px;
+  --breakpoint-575: 575px;
+}
+
+@import "tailwindcss";
+@import "./base.css";
+@import "./components.css";
+@import "./layout.css";
+@import "./utilities.css";

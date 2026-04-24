@@ -1,0 +1,130 @@
+[
+  {
+    "technology_logo": "/icons/tech/wordpress.svg",
+    "technology_link": {
+      "url": "/wordpress-website-development-agency",
+      "target": "",
+      "alt": "WordPress"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/webflow.svg",
+    "technology_link": {
+      "url": "/webflow-development-agency",
+      "target": "",
+      "alt": "Webflow"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/vuejs.svg",
+    "technology_link": {
+      "url": "/vue-js-development-agency",
+      "target": "",
+      "alt": "Vue JS"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/tailwindcss.svg",
+    "technology_link": {
+      "url": "/tailwind-css-development-services",
+      "target": "",
+      "alt": "Tailwind CSS"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/strapi.svg",
+    "technology_link": {
+      "url": "/strapi-custom-development",
+      "target": "",
+      "alt": "Strapi"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/shopify.svg",
+    "technology_link": {
+      "url": "/shopify-website-development-agency",
+      "target": "",
+      "alt": "Shopify"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/rootsio.svg",
+    "technology_link": {
+      "url": "/wordpress-development-roots.io-stack",
+      "target": "",
+      "alt": "Roots.io"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/reactjs.svg",
+    "technology_link": {
+      "url": "/react-js-development-company",
+      "target": "",
+      "alt": "React JS"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/oxygen.svg",
+    "technology_link": {
+      "url": "#",
+      "target": "",
+      "alt": "Oxygen"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/nodejs.svg",
+    "technology_link": {
+      "url": "/node-js-development-agency",
+      "target": "",
+      "alt": "Node JS"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/nextjs.svg",
+    "technology_link": {
+      "url": "/next-js-development-agency",
+      "target": "",
+      "alt": "Next JS"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/hygrogen.svg",
+    "technology_link": {
+      "url": "/shopify-hydrogen-development-services",
+      "target": "",
+      "alt": "Shopify Hydrogen"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/gatsby.svg",
+    "technology_link": {
+      "url": "/gatsby-js-web-development-agency",
+      "target": "",
+      "alt": "Gatsby JS"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/craftcms.svg",
+    "technology_link": {
+      "url": "/craft-cms-development-agency",
+      "target": "",
+      "alt": "Craft CMS"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/builderio.svg",
+    "technology_link": {
+      "url": "/builder-io-development-services",
+      "target": "",
+      "alt": "Builder.io"
+    }
+  },
+  {
+    "technology_logo": "/icons/tech/bigcommerce.svg",
+    "technology_link": {
+      "url": "/bigcommerce-development-company-in-india",
+      "target": "",
+      "alt": "BigCommerce"
+    }
+  }
+]
