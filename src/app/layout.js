@@ -7,11 +7,7 @@ import getThemeOptions from "@/services/site/getThemeOptions";
 import localFont from "next/font/local";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
-import dynamic from "next/dynamic";
-
-const LordiconPlayer = dynamic(() => import("@/components/layout/LordiconPlayer"), {
-  ssr: false,
-});
+import LordiconLoader from "@/components/layout/LordiconLoader";
 
 const dmSans = localFont({
   src: [
@@ -114,7 +110,7 @@ export default async function RootLayout({ children }) {
               header_menu,
             }}
           />
-          <LordiconPlayer />
+          <LordiconLoader />
         </Providers>
         <SpeedInsights />
         <Analytics />
