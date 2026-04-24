@@ -5,7 +5,6 @@ import { Reveal } from "@/components/common/Reveal";
 import { safeParse } from "@/utils/safeParse";
 import Link from "next/link";
 import Image from "next/image";
-import Script from "next/script";
 
 const LookingForOption = ({ id, label, value, onChange }) => {
   return (
@@ -115,9 +114,9 @@ export default function ContactForm({ data, title }) {
   };
 
   useEffect(() => {
+    // Must be set before script loads so the onload= param can call it.
     window.onContactRecaptchaLoad = () => {
       if (
-        typeof window !== "undefined" &&
         window.grecaptcha?.render &&
         recaptchaRef.current &&
         !recaptchaRef.current.hasChildNodes()
@@ -132,9 +131,43 @@ export default function ContactForm({ data, title }) {
         }
       }
     };
-    if (typeof window !== "undefined" && window.grecaptcha?.render) {
+
+    // SPA navigation: script already loaded, render widget immediately.
+    if (window.grecaptcha?.render) {
       window.onContactRecaptchaLoad();
+      return;
     }
+
+    const loadScript = () => {
+      if (window.__recaptchaScriptLoading) return;
+      window.__recaptchaScriptLoading = true;
+      const script = document.createElement("script");
+      script.src =
+        "https://www.google.com/recaptcha/api.js?render=explicit&onload=onContactRecaptchaLoad";
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    };
+
+    const el = recaptchaRef.current;
+    if (!el) {
+      loadScript();
+      return;
+    }
+
+    // Load reCAPTCHA only when the widget placeholder enters the viewport.
+    // 200 px margin pre-loads just before the user sees the form.
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          loadScript();
+          obs.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   const handleSubmit = async () => {
@@ -310,10 +343,6 @@ export default function ContactForm({ data, title }) {
       id={data?.extra_id || ""}
       aria-label={title}
     >
-      <Script
-        src="https://www.google.com/recaptcha/api.js?render=explicit&onload=onContactRecaptchaLoad"
-        strategy="afterInteractive"
-      />
       <div className="container-fluid">
         <div className="bg-black-700/70 rounded-10 px-15 py-25 md:p-40 lg:py-40 relative z-1 overflow-hidden">
           <div className="flex flex-wrap items-stretch justify-center gap-x-40 gap-y-30">
