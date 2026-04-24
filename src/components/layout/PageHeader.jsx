@@ -289,7 +289,6 @@ const PageHeader = ({ headerData }) => {
                     height={60}
                     priority
                     fetchPriority="high"
-                    unoptimized
                   />
                 </Link>
               </div>

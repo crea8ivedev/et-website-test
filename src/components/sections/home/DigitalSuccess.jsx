@@ -127,6 +127,7 @@ export default function AchieveDigitalSuccess({ data }) {
                   className="w-full h-full object-cover rounded-10"
                   width={1112}
                   height={690}
+                  sizes="16vw"
                   alt={(typeof img === "object" ? img.image?.alt || img?.alt : "") || "industry"}
                   aria-label={
                     (typeof img === "object" ? img.image?.alt || img?.alt : "") || "industry"
@@ -148,6 +149,7 @@ export default function AchieveDigitalSuccess({ data }) {
                   className="w-full h-full object-cover rounded-10"
                   width={1112}
                   height={690}
+                  sizes="16vw"
                   alt={(typeof img === "object" ? img.image?.alt || img?.alt : "") || "industry"}
                   aria-label={
                     (typeof img === "object" ? img.image?.alt || img?.alt : "") || "industry"

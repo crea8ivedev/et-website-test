@@ -322,9 +322,7 @@ export default function ContactForm({ data, title }) {
       const hour = Number.parseInt(hourStr, 10);
       const minute = Number.parseInt(minuteStr, 10);
       const dayPeriod = Number.isFinite(hour) ? (hour % 24 < 12 ? "AM" : "PM") : "";
-
       setIndiaTime(`${time24}${dayPeriod ? ` ${dayPeriod}` : ""}`);
-
       const totalMinutes = hour * 60 + minute;
       const openFrom = 10 * 60 + 30;
       const openTill = 19 * 60 + 30;
@@ -333,9 +331,29 @@ export default function ContactForm({ data, title }) {
       );
     };
 
-    tick();
-    const intervalId = window.setInterval(tick, 1000);
-    return () => window.clearInterval(intervalId);
+    let intervalId = null;
+
+    // Run clock only while contact section is visible — saves 1 setInterval tick/sec off-screen.
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          tick();
+          intervalId = window.setInterval(tick, 1000);
+        } else {
+          if (intervalId) { window.clearInterval(intervalId); intervalId = null; }
+        }
+      },
+      { threshold: 0 }
+    );
+
+    const el = formRef.current?.closest("section") || formRef.current;
+    if (el) obs.observe(el);
+    else { tick(); intervalId = window.setInterval(tick, 1000); }
+
+    return () => {
+      obs.disconnect();
+      if (intervalId) window.clearInterval(intervalId);
+    };
   }, []);
   return (
     <section

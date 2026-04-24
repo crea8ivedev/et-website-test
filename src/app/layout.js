@@ -78,6 +78,8 @@ export default async function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
         <link rel="dns-prefetch" href="https://www.google.com" />
         <link rel="dns-prefetch" href="https://www.gstatic.com" />
+        <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/Aeonik-Bold.woff2" crossOrigin="anonymous" />
+        <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/DMSans-Regular.woff2" crossOrigin="anonymous" />
       </head>
       <body className="antialiased">
         <Providers>

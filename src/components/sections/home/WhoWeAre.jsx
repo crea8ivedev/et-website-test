@@ -161,7 +161,7 @@ export default function WhoWeAre({ data }) {
                     height={501}
                     alt={data.image?.alt || "Who We Are Image"}
                     aria-label={data.image?.alt || "Who We Are"}
-                    priority
+                    loading="lazy"
                   />
                 )}
                 {hasVideo && (

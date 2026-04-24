@@ -347,7 +347,6 @@ const PageFooter = ({ footerData }) => {
                             "Google Reviews - Encircle Technologies"
                           }
                           className="max-sm:max-w-[32vw] w-200 lg:w-full aspect-[200/60] h-auto"
-                          unoptimized
                         />
                       </Link>
                     ) : (
@@ -390,7 +389,6 @@ const PageFooter = ({ footerData }) => {
                             "Clutch Reviews - Encircle Technologies"
                           }
                           className="max-sm:max-w-[32vw] w-200 lg:w-full aspect-[200/60] h-auto"
-                          unoptimized
                         />
                       </Link>
                     ) : (

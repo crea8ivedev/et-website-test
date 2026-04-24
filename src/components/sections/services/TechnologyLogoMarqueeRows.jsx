@@ -58,7 +58,7 @@ export default function TechnologyLogoMarqueeRows({
                   aria-label={ariaLabel}
                   className={imageClassName}
                   priority={priority}
-                  style={{ width: "auto", height: "auto" }}
+                  sizes="100px"
                 />
               </Link>
             );

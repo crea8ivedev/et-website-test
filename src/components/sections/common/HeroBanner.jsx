@@ -27,6 +27,7 @@ export default function HeroBanner({ data }) {
                     state="loop-rotate"
                     colors="primary:#eda800,secondary:#f4dc9c"
                     className="w-80 h-80 max-1025:size-60 max-575:size-40"
+                    aria-hidden="true"
                   ></lord-icon>
                   CUSTOM WEB
                 </div>
@@ -40,6 +41,7 @@ export default function HeroBanner({ data }) {
                     trigger="loop"
                     colors="primary:#eda800,secondary:#f4dc9c"
                     className="w-80 h-80 max-1025:size-60 max-575:size-40"
+                    aria-hidden="true"
                   ></lord-icon>
                   GROWTH.
                 </div>

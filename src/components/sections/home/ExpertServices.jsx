@@ -24,7 +24,7 @@ export default function ExpertServices({ data }) {
   }, []);
 
   useEffect(() => {
-    let animationFrameId;
+    let animationFrameId = null;
     let x = 0;
     let y = 0;
     let dx = 2;
@@ -33,34 +33,38 @@ export default function ExpertServices({ data }) {
     const animate = () => {
       const { width, height } = growthBoundsRef.current;
       const el = bubbleRef.current;
-      if (!width || !height || !bubbleSize || !el) {
-        animationFrameId = requestAnimationFrame(animate);
-        return;
+      if (width && height && bubbleSize && el) {
+        const maxX = Math.max(width - bubbleSize, 0);
+        const maxY = Math.max(height - bubbleSize, 0);
+        x += dx;
+        y += dy;
+        if (x <= 0 || x >= maxX) { x = Math.max(0, Math.min(x, maxX)); dx *= -1; }
+        if (y <= 0 || y >= maxY) { y = Math.max(0, Math.min(y, maxY)); dy *= -1; }
+        el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       }
-
-      const maxX = Math.max(width - bubbleSize, 0);
-      const maxY = Math.max(height - bubbleSize, 0);
-
-      x += dx;
-      y += dy;
-
-      if (x <= 0 || x >= maxX) {
-        x = Math.max(0, Math.min(x, maxX));
-        dx *= -1;
-      }
-      if (y <= 0 || y >= maxY) {
-        y = Math.max(0, Math.min(y, maxY));
-        dy *= -1;
-      }
-
-      // Write transform directly to DOM — skips React re-renders, same optimization
-      // framer-motion's useMotionValue provided.
-      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    animationFrameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrameId);
+    const container = growthRef.current;
+    if (!container) return;
+
+    // Only run animation while section is visible — stops 60fps rAF off-screen.
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!animationFrameId) animationFrameId = requestAnimationFrame(animate);
+        } else {
+          if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
+        }
+      },
+      { threshold: 0.1 }
+    );
+    obs.observe(container);
+
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      obs.disconnect();
+    };
   }, [bubbleSize]);
 
   if (!data) return null;

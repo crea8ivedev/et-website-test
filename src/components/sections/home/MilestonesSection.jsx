@@ -56,17 +56,24 @@ const MilestonesSection = ({ data }) => {
       setTimelineReady(true);
     };
 
+    let debounceTimer = null;
+    const debouncedMeasure = () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(measure, 100);
+    };
+
     const raf = requestAnimationFrame(measure);
-    const ro = new ResizeObserver(measure);
+    const ro = new ResizeObserver(debouncedMeasure);
     ro.observe(stageEl);
     ro.observe(arcEl);
     ro.observe(contentEl);
-    window.addEventListener("resize", measure);
+    window.addEventListener("resize", debouncedMeasure);
 
     return () => {
       cancelAnimationFrame(raf);
+      clearTimeout(debounceTimer);
       ro.disconnect();
-      window.removeEventListener("resize", measure);
+      window.removeEventListener("resize", debouncedMeasure);
     };
   }, []);
 
