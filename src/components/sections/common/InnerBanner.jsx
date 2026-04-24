@@ -11,7 +11,17 @@ const SingleETShapeVideo = ({ src, poster }) => {
   useEffect(() => {
     const el = videoElRef.current;
     if (!el) return;
-    el.play().catch(() => {});
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.play().catch(() => {});
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   return (

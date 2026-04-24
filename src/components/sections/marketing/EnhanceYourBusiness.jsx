@@ -89,6 +89,7 @@ export default function EnhanceYourBusiness({ data }) {
                       loop
                       autoPlay
                       playsInline
+                      preload="none"
                       src={videoSrc}
                       className="absolute inset-0 w-full h-full object-cover pointer-events-none"
                     />

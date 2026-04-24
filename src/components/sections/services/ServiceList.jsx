@@ -1,11 +1,23 @@
 "use client";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { safeParse } from "@/utils/safeParse";
 
 export default function ServiceList({ data, title }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const videoRefs = useRef([]);
+
+  useEffect(() => {
+    videoRefs.current.forEach((video, i) => {
+      if (!video) return;
+      if (i === activeIndex) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }, [activeIndex]);
 
   return (
     <section
@@ -33,11 +45,12 @@ export default function ServiceList({ data, title }) {
                   >
                     {videoSrc ? (
                       <video
+                        ref={(el) => (videoRefs.current[index] = el)}
                         src={videoSrc}
-                        autoPlay
                         muted
                         loop
                         playsInline
+                        preload="none"
                         className="w-full h-full object-cover"
                         poster={
                           imageSrc

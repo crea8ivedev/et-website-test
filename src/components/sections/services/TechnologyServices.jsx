@@ -1,62 +1,8 @@
 "use client";
 import React from "react";
-import Image from "next/image";
 import { safeParse } from "@/utils/safeParse";
 import { Reveal } from "@/components/common/Reveal";
-import * as RiIcons from "react-icons/ri";
-import * as FaIcons from "react-icons/fa";
-import * as LuIcons from "react-icons/lu";
-import * as HiIcons from "react-icons/hi";
-import * as MdIcons from "react-icons/md";
-import * as FcIcons from "react-icons/fc";
-import * as GrIcons from "react-icons/gr";
-import * as Io5Icons from "react-icons/io5";
-import * as TbIcons from "react-icons/tb";
-import * as SiIcons from "react-icons/si";
-import * as BiIcons from "react-icons/bi";
-import * as BsIcons from "react-icons/bs";
-import * as fa6Icons from "react-icons/fa6";
-import * as AiIcons from "react-icons/ai";
-import * as RxIcons from "react-icons/rx";
-import * as PiIcons from "react-icons/pi";
-import * as CgIcons from "react-icons/cg";
-
-const ICON_SETS = [
-  RiIcons,
-  FaIcons,
-  LuIcons,
-  HiIcons,
-  MdIcons,
-  FcIcons,
-  GrIcons,
-  Io5Icons,
-  TbIcons,
-  fa6Icons,
-  BiIcons,
-  BsIcons,
-  SiIcons,
-  AiIcons,
-  RxIcons,
-  PiIcons,
-  CgIcons,
-];
-
-function resolveIcon(iconData, altText) {
-  if (typeof iconData === "string") {
-    const iconName = iconData.replace(/[<> /]/g, "");
-    for (const set of ICON_SETS) {
-      if (set[iconName]) {
-        const IconComponent = set[iconName];
-        return <IconComponent className="text-white w-full h-full" />;
-      }
-    }
-  }
-  const iconSrc = typeof iconData === "string" ? iconData : iconData?.url;
-  if (iconSrc) {
-    return <Image src={iconSrc} width={64} height={64} alt={altText} />;
-  }
-  return null;
-}
+import DynamicIcon from "@/components/icons/DynamicIcon";
 
 export default function TechnologyServices({ data, title }) {
   if (!data) return null;
@@ -94,7 +40,14 @@ export default function TechnologyServices({ data, title }) {
       />
       <div className="flex max-sm:flex-col sm:items-center py-28 px-20 md:p-28 gap-30 relative min-h-175">
         <Reveal direction="none" delay={300} className="ico size-64 p-10 bg-black-600 rounded-full">
-          {resolveIcon(service.service_icon, service.service_name)}
+          <DynamicIcon
+            name={typeof service.service_icon === "string" ? service.service_icon : null}
+            className="text-white w-full h-full"
+            fallbackSrc={typeof service.service_icon === "string" ? service.service_icon : service.service_icon?.url}
+            fallbackAlt={service.service_name}
+            fallbackWidth={64}
+            fallbackHeight={64}
+          />
         </Reveal>
         <Reveal delay={400} className="cta sm:max-w-[calc(100%_-_94px)]">
           <div className="title title-white mb-10 min-h-48">

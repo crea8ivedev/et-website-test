@@ -1,26 +1,7 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
-import Image from "next/image";
 import { safeParse } from "@/utils/safeParse";
-import * as RiIcons from "react-icons/ri";
-import * as FaIcons from "react-icons/fa";
-import * as LuIcons from "react-icons/lu";
-import * as HiIcons from "react-icons/hi";
-import * as MdIcons from "react-icons/md";
-import * as FcIcons from "react-icons/fc";
-import * as GrIcons from "react-icons/gr";
-import * as Io5Icons from "react-icons/io5";
-import * as TbIcons from "react-icons/tb";
-import * as SiIcons from "react-icons/si";
-import * as BiIcons from "react-icons/bi";
-import * as BsIcons from "react-icons/bs";
-import * as fa6Icons from "react-icons/fa6";
-import * as CgIcons from "react-icons/cg";
-import * as FiIcons from "react-icons/fi";
-import * as GiIcons from "react-icons/gi";
-import * as VscIcons from "react-icons/vsc";
-import * as PiIcons from "react-icons/pi";
-import * as AiIcons from "react-icons/ai";
+import DynamicIcon from "@/components/icons/DynamicIcon";
 
 export default function ExpertServices({ data }) {
   const growthRef = useRef(null);
@@ -127,62 +108,15 @@ export default function ExpertServices({ data }) {
                 className={`block relative overflow-hidden mx-auto bg-black/30 backdrop-blur-lg border border-solid border-black-600/60 rounded-10 p-25 xl:p-30 z-1 fade-up delay-0${index + 1} in-view`}
               >
                 <div className={`icon mb-30 fade-in delay-0${index + 1} in-view`}>
-                  {(() => {
-                    const iconData = item.service_image;
-
-                    if (typeof iconData === "string") {
-                      const iconName = iconData.replace(/[<> /]/g, "");
-                      const iconSets = [
-                        RiIcons,
-                        FaIcons,
-                        LuIcons,
-                        HiIcons,
-                        MdIcons,
-                        FcIcons,
-                        GrIcons,
-                        Io5Icons,
-                        TbIcons,
-                        fa6Icons,
-                        BiIcons,
-                        BsIcons,
-                        SiIcons,
-                        CgIcons,
-                        FiIcons,
-                        GiIcons,
-                        VscIcons,
-                        PiIcons,
-                        AiIcons,
-                      ];
-                      let IconComponent = null;
-
-                      for (const set of iconSets) {
-                        if (set[iconName]) {
-                          IconComponent = set[iconName];
-                          break;
-                        }
-                      }
-
-                      if (IconComponent) {
-                        return <IconComponent className="text-white size-46" />;
-                      }
-                    }
-
-                    // Fallback to Image URL
-                    const iconSrc = typeof iconData === "string" ? iconData : iconData?.url;
-                    if (iconSrc) {
-                      return (
-                        <Image
-                          src={iconSrc}
-                          width={64}
-                          height={64}
-                          alt={item.service_image?.alt || item.service_title}
-                          className="object-contain text-white"
-                          style={{ filter: "brightness(0) invert(1)" }}
-                        />
-                      );
-                    }
-                    return null;
-                  })()}
+                  <DynamicIcon
+                    name={typeof item.service_image === "string" ? item.service_image : null}
+                    className="text-white size-46"
+                    fallbackSrc={typeof item.service_image === "string" ? item.service_image : item.service_image?.url}
+                    fallbackAlt={item.service_image?.alt || item.service_title}
+                    fallbackWidth={64}
+                    fallbackHeight={64}
+                    fallbackStyle={{ filter: "brightness(0) invert(1)" }}
+                  />
                 </div>
                 <div className={`title title-white mb-20 fade-up delay-0${index + 1} in-view`}>
                   <h3 className="h5">{item.service_title}</h3>

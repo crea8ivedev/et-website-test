@@ -2,26 +2,8 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { Reveal } from "@/components/common/Reveal";
-import Image from "next/image";
 import { safeParse } from "@/utils/safeParse";
-import * as RiIcons from "react-icons/ri";
-import * as FaIcons from "react-icons/fa";
-import * as LuIcons from "react-icons/lu";
-import * as HiIcons from "react-icons/hi";
-import * as MdIcons from "react-icons/md";
-import * as FcIcons from "react-icons/fc";
-import * as GrIcons from "react-icons/gr";
-import * as Io5Icons from "react-icons/io5";
-import * as TbIcons from "react-icons/tb";
-import * as SiIcons from "react-icons/si";
-import * as BiIcons from "react-icons/bi";
-import * as BsIcons from "react-icons/bs";
-import * as fa6Icons from "react-icons/fa6";
-import * as CgIcons from "react-icons/cg";
-import * as FiIcons from "react-icons/fi";
-import * as GiIcons from "react-icons/gi";
-import * as VscIcons from "react-icons/vsc";
-import * as PiIcons from "react-icons/pi";
+import DynamicIcon from "@/components/icons/DynamicIcon";
 function EllipseTrack({ rotate }) {
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -138,59 +120,14 @@ function CardItem({ card, index, total, progress }) {
       }}
     >
       <div className="max-md:mb-20 mb-40 opacity-75">
-        {(() => {
-          const iconData = card?.icon;
-
-          if (typeof iconData === "string") {
-            const iconName = iconData.replace(/[<> /]/g, "");
-            const iconSets = [
-              RiIcons,
-              FaIcons,
-              LuIcons,
-              HiIcons,
-              MdIcons,
-              FcIcons,
-              GrIcons,
-              Io5Icons,
-              TbIcons,
-              fa6Icons,
-              BiIcons,
-              BsIcons,
-              SiIcons,
-              CgIcons,
-              FiIcons,
-              GiIcons,
-              VscIcons,
-              PiIcons,
-            ];
-            let IconComponent = null;
-
-            for (const set of iconSets) {
-              if (set[iconName]) {
-                IconComponent = set[iconName];
-                break;
-              }
-            }
-
-            if (IconComponent) {
-              return <IconComponent className="text-white size-46" />;
-            }
-          }
-
-          // Fallback to Image URL
-          const iconSrc = typeof iconData === "string" ? iconData : iconData?.url;
-          if (iconSrc) {
-            return (
-              <Image
-                src={iconSrc}
-                width={card?.icon?.width || 46}
-                height={card?.icon?.height || 46}
-                alt={card.title || `Icon ${index + 1}`}
-              />
-            );
-          }
-          return null;
-        })()}
+        <DynamicIcon
+          name={typeof card?.icon === "string" ? card.icon : null}
+          className="text-white size-46"
+          fallbackSrc={typeof card?.icon === "string" ? card.icon : card?.icon?.url}
+          fallbackAlt={card.title || `Icon ${index + 1}`}
+          fallbackWidth={card?.icon?.width || 46}
+          fallbackHeight={card?.icon?.height || 46}
+        />
       </div>
       <div className="title title-white mb-20">
         <h2 className="h4">
